@@ -1,8 +1,7 @@
 # ObjectEnum
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/object_enum`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Java-like Enum can be defined by include this module.  
+A good solution to simplify category logic.
 
 ## Installation
 
@@ -21,8 +20,56 @@ Or install it yourself as:
     $ gem install object_enum
 
 ## Usage
+For example, an Enum with a simple single value can be written as: 
+```ruby
+class Role
+  include ObjectEnum
+  attr_reader :name
+  def initialize(name)
+    @name = name
+  end
 
-TODO: Write usage instructions here
+  CUSTOMER = new("customer")
+  ADMIN    = new("admin")
+end
+
+# Find by name
+Role.find(name: "customer") == Role::CUSTOMER
+```
+If you want to switch implement on the role, you can keep your code simple by splitting the value into another class.
+```ruby
+class RoleBase
+  def label
+    raise "Not implemented!!!"
+  end
+end
+
+class Customer < RoleBase
+  def label
+    "customer"
+  end
+end
+
+class Admin < RoleBase
+  def label
+    "admin"
+  end
+end
+
+class Role
+  include ObjectEnum
+
+  CUSTOMER = Customer.new
+  ADMIN = Admin.new
+
+  # Override enum_class method.     
+  def self.enum_class
+    RoleBase
+  end
+end
+
+Role::ADMIN.label == "admin"
+```
 
 ## Development
 
@@ -32,13 +79,8 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/object_enum. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/[USERNAME]/object_enum/blob/master/CODE_OF_CONDUCT.md).
-
+Bug reports and pull requests are welcome on GitHub at https://github.com/orekyuu/object_enum.
 
 ## License
 
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
-
-## Code of Conduct
-
-Everyone interacting in the ObjectEnum project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/object_enum/blob/master/CODE_OF_CONDUCT.md).
